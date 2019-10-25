@@ -1,65 +1,74 @@
-
-# This is the file where you must work.
-# Write code in the functions (and create new functions) so that they work
-# according to the specification.
+from tabel import Tabel
+import csv
+inv = {'rope': 1, 'torch': 6, 'gold coin': 42, 'dagger': 1, 'arrow': 12}
+dragon_loot = ['gold coin', 'dagger', 'gold coin', 'gold coin', 'ruby']
 
 
 def display_inventory(inventory):
-    '''Display the inventory like this:
-    rope: 1
-    torch: 6
-    '''
-    pass
+    for i in inventory:
+        print(i, ':', inventory.get(i))
 
 
 def add_to_inventory(inventory, added_items):
-    '''Add to the inventory dictionary a list of items from added_items.'''
-    pass
+    for i in added_items:
+        if i in inventory.keys():
+            inventory[i] = inventory.get(i) + 1
+        else:
+            inventory[i] = 1
+    return inventory
 
 
 def print_table(inventory, order=None):
-    '''
-    Take your inventory and display it in a well-organized table with
-    each column right-justified like this:
-
-    -----------------
-    item name | count
-    -----------------
-         rope |     1
-        torch |     6
-    -----------------
-
-    The 'order' parameter (string) works as follows:
-    - None (by default) means the table is unordered
-    - "count,desc" means the table is ordered by count (of items in the
-      inventory) in descending order
-    - "count,asc" means the table is ordered by count in ascending order
-    '''
-
-    pass
+    items = []
+    count = []
+    if order == None:
+        for i in inventory:
+            items.append(i)
+            count.append(inventory.get(i))
+    if order == "count,desc":
+        inventory_desc = sorted(
+            inventory.items(), key=lambda t: t[1], reverse=True)
+        for j in inventory_desc:
+            items.append(j[0])
+            count.append(j[1])
+    elif order == "count,asc":
+        inventory_asc = sorted(
+            inventory.items(), key=lambda t: t[1])
+        for j in inventory_asc:
+            items.append(j[0])
+            count.append(j[1])
+    tbl = Tabel([items,
+                 count], columns=["Item name", "Count"])
+    print(tbl)
 
 
 def import_inventory(inventory, filename="import_inventory.csv"):
-    '''
-    Import new inventory items from a file.
+    with open('import_inventory.csv', 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        line = []
+        for l in csv_reader:
+            line = l
 
-    The filename comes as an argument, but by default it's
-    "import_inventory.csv". The import automatically merges items by name.
-
-    The file format is plain text with comma separated values (CSV).
-    '''
-
-    pass
+    for i in line:
+        if i in inventory.keys():
+            inventory[i] = inventory.get(i) + 1
+        else:
+            inventory[i] = 1
+    return inventory
 
 
 def export_inventory(inventory, filename="export_inventory.csv"):
-    '''
-    Export the inventory into a .csv file.
+    with open(filename, 'w') as new_csv_file:
+        writer = csv.writer(new_csv_file, delimiter=',')
+        inv1 = []
+        for item, count in inv.items():
+            for i in range(count):
+                inv1.append(item)
+        writer.writerow(inv1)
 
-    If the filename argument is None, it creates and overwrites a file
-    called "export_inventory.csv".
 
-    The file format is plain text with comma separated values (CSV).
-    '''
-
-    pass
+add_to_inventory(inv, dragon_loot)
+display_inventory(inv)
+print(import_inventory(inv))
+print_table(inv, "count,desc")
+export_inventory(inv)
