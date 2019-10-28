@@ -25,18 +25,19 @@ def print_table(inventory, order=None):
         for i in inventory:
             items.append(i)
             count.append(inventory.get(i))
-    if order == "count,desc":
+    # if order == "count,desc":
+    else:
         inventory_desc = sorted(
-            inventory.items(), key=lambda t: t[1], reverse=True)
+            inventory.items(), key=lambda t: t[1], reverse=(True if order == "count,desc" else False))
         for j in inventory_desc:
             items.append(j[0])
             count.append(j[1])
-    elif order == "count,asc":
-        inventory_asc = sorted(
-            inventory.items(), key=lambda t: t[1])
-        for j in inventory_asc:
-            items.append(j[0])
-            count.append(j[1])
+    # elif order == "count,asc":
+    #     inventory_asc = sorted(
+    #         inventory.items(), key=lambda t: t[1])
+    #     for j in inventory_asc:
+    #         items.append(j[0])
+    #         count.append(j[1])
     tbl = Tabel([items,
                  count], columns=["Item name", "Count"])
     print(tbl)
@@ -67,8 +68,8 @@ def export_inventory(inventory, filename="export_inventory.csv"):
         writer.writerow(inv1)
 
 
-add_to_inventory(inv, dragon_loot)
-display_inventory(inv)
-print(import_inventory(inv))
-print_table(inv, "count,desc")
-export_inventory(inv)
+# add_to_inventory(inv, dragon_loot)
+# display_inventory(inv)
+# print(import_inventory(inv))
+print_table(inv, "count,asc")
+# export_inventory(inv)
